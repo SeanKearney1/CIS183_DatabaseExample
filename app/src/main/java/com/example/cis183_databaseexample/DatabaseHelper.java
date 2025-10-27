@@ -1,6 +1,7 @@
 package com.example.cis183_databaseexample;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -59,7 +60,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
     //initialize all tables with dummy data
     public void initAllTables()
     {
+
         initUsers();
+        init_posts();
     }
 
     //this function will only be used once to add dummy data to my users table
@@ -83,8 +86,31 @@ public class DatabaseHelper extends SQLiteOpenHelper
             db.execSQL("INSERT INTO " + users_table_name + " (fname, lname, email) VALUES ('Harrison', 'Moore', 'hsm@yahoo.com');");
             db.execSQL("INSERT INTO " + users_table_name + " (fname, lname, email) VALUES ('Tito', 'Williams', 'Tito_Boy@company.gov');");
             db.execSQL("INSERT INTO " + users_table_name + " (fname, lname, email) VALUES ('Willow', 'Branch', 'Willow_Branch@hotmail.com');");
+            db.execSQL("INSERT INTO " + users_table_name + " (fname, lname, email) VALUES ('Sean', 'Kearney', 'skearney@mail.com');");
+
 
             //close the database
+            db.close();
+        }
+    }
+
+    private void init_posts() {
+        if (countRecordsFromTable(posts_table_name) == 0) {
+            SQLiteDatabase db = this.getWritableDatabase();
+
+            db.execSQL("INSERT INTO " + posts_table_name + " (userid, category, postData) VALUES (1,'Technology', 'This is my first pos about tech. I am posting about my new computer.');");
+            db.execSQL("INSERT INTO " + posts_table_name + " (userid, category, postData) VALUES (6,'Math', 'I really like math.');");
+            db.execSQL("INSERT INTO " + posts_table_name + " (userid, category, postData) VALUES (6,'Computer', 'Help I have a virus and now my computer is broken!');");
+            db.execSQL("INSERT INTO " + posts_table_name + " (userid, category, postData) VALUES (5,'Water', 'I hate sand, its small and gets everywhere and I really dont remember the rest of the quote.');");
+            db.execSQL("INSERT INTO " + posts_table_name + " (userid, category, postData) VALUES (4,'Chair', 'I really like chair.');");
+            db.execSQL("INSERT INTO " + posts_table_name + " (userid, category, postData) VALUES (3,'Animal', 'I saw a bird today. Here is pic. bird.png');");
+            db.execSQL("INSERT INTO " + posts_table_name + " (userid, category, postData) VALUES (2,'Animal', 'You didnt send the picture.');");
+            db.execSQL("INSERT INTO " + posts_table_name + " (userid, category, postData) VALUES (1,'Game', 'I really like game.');");
+            db.execSQL("INSERT INTO " + posts_table_name + " (userid, category, postData) VALUES (2,'Trees', 'I was a tree today. Dont have a pic.');");
+            db.execSQL("INSERT INTO " + posts_table_name + " (userid, category, postData) VALUES (2,'Space', ' ');");
+            db.execSQL("INSERT INTO " + posts_table_name + " (userid, category, postData) VALUES (4,'Game', 'SMG Movie coming out in April!');");
+            db.execSQL("INSERT INTO " + posts_table_name + " (userid, category, postData) VALUES (4,'Game', 'TF2 Scream Fortress 2025 is almost over >:( ');");
+
             db.close();
         }
     }
@@ -104,4 +130,50 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
         return numRows;
     }
+
+    public void getAllUserDataGivenId(int userId) {
+        if (userIdExists(userId)) {
+            User loggedInUser = new User();
+            String selectAll = "SELECT * FROM " + users_table_name + " WHERE userId = '" + userId + "';";
+
+            SQLiteDatabase db = this.getReadableDatabase();
+            Cursor cursor = db.rawQuery(selectAll, null);
+
+            if (cursor != null) {
+                cursor.moveToFirst();
+            }
+
+            loggedInUser.setId(cursor.getInt(0));
+            loggedInUser.setFname(cursor.getString(1));
+            loggedInUser.setLname(cursor.getString(2));
+            loggedInUser.setEmail(cursor.getString(3));
+
+            SessionData.setLoggedInUser(loggedInUser);
+        }
+        else {
+            SessionData.setLoggedInUser(null);
+        }
+    }
+
+    public boolean userIdExists(int userid) {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String checkUserId = "SELECT count(userId) FROM " + users_table_name + " WHERE userId = '" + userid + "';";
+
+        Cursor cursor = db.rawQuery(checkUserId,null);
+
+        cursor.moveToFirst();
+        int count = cursor.getInt(0);
+
+        db.close();
+
+        if (count != 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+
 }

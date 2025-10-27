@@ -2,6 +2,9 @@ package com.example.cis183_databaseexample;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +15,12 @@ import androidx.core.view.WindowInsetsCompat;
 public class MainActivity extends AppCompatActivity
 {
     DatabaseHelper dbHelper;
+
+    EditText et_j_userid;
+
+    Button btn_j_login;
+    Button btn_j_register;
+    Button btn_j_findid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +33,11 @@ public class MainActivity extends AppCompatActivity
             return insets;
         });
 
+        et_j_userid = findViewById(R.id.et_v_userid);
+        btn_j_login = findViewById(R.id.btn_v_login);
+        btn_j_register = findViewById(R.id.btn_v_register);
+        btn_j_findid = findViewById(R.id.btn_v_findid);
+
         //make new instance of the dbHelper
         dbHelper = new DatabaseHelper(this);
 
@@ -33,6 +47,7 @@ public class MainActivity extends AppCompatActivity
 
         //just used for testing
         checkTableRecordCount();
+        setButtonClickListeners();
 
     }
 
@@ -40,5 +55,36 @@ public class MainActivity extends AppCompatActivity
     private void checkTableRecordCount()
     {
         Log.d("Users Record Count: ", dbHelper.countRecordsFromTable(dbHelper.getUserTableName()) + "");
+        Log.d("Posts Record Count: ", dbHelper.countRecordsFromTable(dbHelper.getPostsTableName()) + "");
+    }
+
+    private void setButtonClickListeners() {
+        btn_j_login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int enteredId = Integer.parseInt(et_j_userid.getText().toString());
+
+                dbHelper.getAllUserDataGivenId(enteredId);
+                if (SessionData.getLoggedInUser() != null) {
+                    User u = SessionData.getLoggedInUser();
+                    Log.d("Logged in: ",u.getFname()+ " " +u.getLname());
+                }
+                else {
+                    Log.d("Logged in: ","Invalid User");
+                }
+            }
+        });
+        btn_j_register.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        btn_j_findid.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 }
