@@ -6,6 +6,8 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
+
 public class DatabaseHelper extends SQLiteOpenHelper
 {
     private static final String database_name = "Blog.db";
@@ -86,8 +88,6 @@ public class DatabaseHelper extends SQLiteOpenHelper
             db.execSQL("INSERT INTO " + users_table_name + " (fname, lname, email) VALUES ('Harrison', 'Moore', 'hsm@yahoo.com');");
             db.execSQL("INSERT INTO " + users_table_name + " (fname, lname, email) VALUES ('Tito', 'Williams', 'Tito_Boy@company.gov');");
             db.execSQL("INSERT INTO " + users_table_name + " (fname, lname, email) VALUES ('Willow', 'Branch', 'Willow_Branch@hotmail.com');");
-            db.execSQL("INSERT INTO " + users_table_name + " (fname, lname, email) VALUES ('Sean', 'Kearney', 'skearney@mail.com');");
-
 
             //close the database
             db.close();
@@ -175,5 +175,39 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return false;
     }
 
+    public int getNumPosts() {
+        int numPosts = 0;
+
+        String selectStatement = "SELECT COUNT(userId) FROM " + posts_table_name + " WHERE userId = '" + SessionData.getLoggedInUser().getId() + "';";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectStatement,null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+            numPosts = cursor.getInt(0);
+        }
+        db.close();
+        return numPosts;
+    }
+
+    public ArrayList<String> getAllPosts() {
+        String selectStatement = "SELECT postData FROM " +posts_table_name + " WHERE userId = '" + SessionData.getLoggedInUser().getId() + "';";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectStatement,null);
+
+        ArrayList<String> posts = new ArrayList<>();
+
+        if (cursor.moveToFirst()) {
+            do {
+              String post = cursor.getString(0);
+              posts.add(post);
+            }
+            while(cursor.moveToNext());
+        }
+
+
+        db.close();
+        return posts;
+
+    }
 
 }

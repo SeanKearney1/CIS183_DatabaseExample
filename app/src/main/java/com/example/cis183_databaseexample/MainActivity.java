@@ -1,5 +1,6 @@
 package com.example.cis183_databaseexample;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -68,6 +69,7 @@ public class MainActivity extends AppCompatActivity
                 if (SessionData.getLoggedInUser() != null) {
                     User u = SessionData.getLoggedInUser();
                     Log.d("Logged in: ",u.getFname()+ " " +u.getLname());
+                    startActivity(new Intent(MainActivity.this,WelcomePage.class));
                 }
                 else {
                     Log.d("Logged in: ","Invalid User");
