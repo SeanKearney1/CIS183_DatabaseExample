@@ -1,11 +1,16 @@
 package com.example.cis183_databaseexample;
 
 import android.content.Intent;
+import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Adapter;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -80,6 +85,8 @@ public class WelcomePage extends AppCompatActivity {
 
     private void setListViewWithPosts() {
         ArrayList<String> posts = db.getAllPosts();
+
+        //lv_j_posts.setAdapter(post_adapter);
 
         for(int i = 0; i < posts.size();i++) {
             Log.d("Posts",posts.get(i));
