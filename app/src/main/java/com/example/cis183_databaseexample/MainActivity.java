@@ -63,8 +63,8 @@ public class MainActivity extends AppCompatActivity
         btn_j_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (et_j_userid.getText().toString().isEmpty()) { return; }
                 int enteredId = Integer.parseInt(et_j_userid.getText().toString());
-
                 dbHelper.getAllUserDataGivenId(enteredId);
                 if (SessionData.getLoggedInUser() != null) {
                     User u = SessionData.getLoggedInUser();
@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity
         btn_j_register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                startActivity(new Intent(MainActivity.this,Register.class));
             }
         });
         btn_j_findid.setOnClickListener(new View.OnClickListener() {

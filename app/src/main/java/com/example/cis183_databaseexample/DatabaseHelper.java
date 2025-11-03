@@ -210,4 +210,45 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
     }
 
+    public void addUserToDB(User u) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String insertUser = "INSERT INTO " + users_table_name + " (fname, lname, email) VALUES ('" + u.getFname() + "', '" + u.getLname() + "', '" + u.getEmail() + "');";
+        db.execSQL(insertUser);
+        db.close();
+    }
+
+
+
+    public ArrayList<Integer> findUserGivenCriteria(String f, String l) {
+        ArrayList<Integer> listUsers = new ArrayList<>();
+
+        String selectStatement = "SELECT userId FROM "+ users_table_name + " WHERE ";
+
+        if (f.isEmpty()) {
+            selectStatement += "fname is not null and ";
+        }
+        else {
+            selectStatement += "fname = '" + f + "' and ";
+        }
+        if (l.isEmpty()) {
+            selectStatement += "lname is not null;";
+        }
+        else {
+            selectStatement += "lname = '" + l + "';";
+        }
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectStatement,null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                int user_id = cursor.getInt(0);
+                listUsers.add(user_id);
+            }
+            while(cursor.moveToNext());
+        }
+
+        return listUsers;
+    }
+
 }
