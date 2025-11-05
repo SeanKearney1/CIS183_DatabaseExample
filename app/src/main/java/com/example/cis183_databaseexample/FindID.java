@@ -2,8 +2,11 @@ package com.example.cis183_databaseexample;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,9 +14,20 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.util.ArrayList;
+
 public class FindID extends AppCompatActivity {
 
+    DatabaseHelper db;
     Button btn_j_findId_back;
+    Button btn_j_findId_search;
+
+    EditText et_j_fname;
+    EditText et_j_lname;
+
+    ListView lv_j_search;
+
+    SearchBoxAdapter sbAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +40,15 @@ public class FindID extends AppCompatActivity {
             return insets;
         });
 
+        db = new DatabaseHelper(this);
+
         btn_j_findId_back = findViewById(R.id.btn_findId_back);
+        btn_j_findId_search = findViewById(R.id.btn_findId_find);
+
+        et_j_fname = findViewById(R.id.et_findId_fname);
+        et_j_lname = findViewById(R.id.et_findId_lname);
+
+        lv_j_search = findViewById(R.id.lv_findId_search);
 
         setButtonOnClickListeners();
     }
@@ -41,5 +63,29 @@ public class FindID extends AppCompatActivity {
                 startActivity(new Intent(FindID.this,MainActivity.class));
             }
         });
+        btn_j_findId_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                search_filter_db();
+                Log.d("Hello?","Hello?");
+            }
+        });
     }
+
+    void search_filter_db() {
+        String fname = et_j_fname.getText().toString();
+        String lname = et_j_lname.getText().toString();
+        ArrayList<Integer> userIds = db.findUserGivenCriteria(fname,lname);
+
+        sbAdapter = new SearchBoxAdapter(this,userIds);
+        lv_j_search.setAdapter(sbAdapter);
+
+        for (int i = 0; i < userIds.size();i++) {
+            Log.d("Search("+fname+", "+lname+")",""+userIds.get(i));
+        }
+
+
+        db.close();
+    }
+
 }

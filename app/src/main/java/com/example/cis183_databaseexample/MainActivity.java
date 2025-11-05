@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity
         btn_j_findid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                startActivity(new Intent(MainActivity.this,FindID.class));
             }
         });
     }

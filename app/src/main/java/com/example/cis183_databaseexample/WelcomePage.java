@@ -56,6 +56,8 @@ public class WelcomePage extends AppCompatActivity {
         setListViewWithPosts();
 
         setClickListeners();
+
+        db.GetAllPostsGivenCriteria("","","Animal");
     }
 
 
