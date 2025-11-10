@@ -57,7 +57,7 @@ public class WelcomePage extends AppCompatActivity {
 
         setClickListeners();
 
-        db.GetAllPostsGivenCriteria("","","Animal");
+        //db.GetAllPostsGivenCriteria("","","");
     }
 
 

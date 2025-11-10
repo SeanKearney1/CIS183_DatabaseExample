@@ -317,4 +317,28 @@ public class DatabaseHelper extends SQLiteOpenHelper
         return listPosts;
     }
 
+
+    public User getUserGivenId(int userId) {
+        if (userIdExists(userId)) {
+            Log.d("USER EXISTS","----"+userId);
+            User loggedInUser = new User();
+            String selectAll = "SELECT * FROM " + users_table_name + " WHERE userId = '" + userId + "';";
+
+            SQLiteDatabase db = this.getReadableDatabase();
+            Cursor cursor = db.rawQuery(selectAll, null);
+
+            if (cursor != null) {
+                cursor.moveToFirst();
+            }
+
+            loggedInUser.setId(cursor.getInt(0));
+            loggedInUser.setFname(cursor.getString(1));
+            loggedInUser.setLname(cursor.getString(2));
+            loggedInUser.setEmail(cursor.getString(3));
+
+            return loggedInUser;
+        }
+        return null;
+    }
+
 }
