@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -70,15 +71,24 @@ public class FindID extends AppCompatActivity {
                 Log.d("Hello?","Hello?");
             }
         });
+        lv_j_search.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                switchUser(position);
+
+            }
+        });
     }
 
-    void search_filter_db() {
+    private void search_filter_db() {
         String fname = et_j_fname.getText().toString();
         String lname = et_j_lname.getText().toString();
         ArrayList<Integer> userIds = db.findUserGivenCriteria(fname,lname);
 
         sbAdapter = new SearchBoxAdapter(this,userIds);
         lv_j_search.setAdapter(sbAdapter);
+
 
         for (int i = 0; i < userIds.size();i++) {
             Log.d("Search("+fname+", "+lname+")",""+userIds.get(i));
@@ -87,5 +97,16 @@ public class FindID extends AppCompatActivity {
 
         db.close();
     }
+
+
+    private void switchUser(int position) {
+        User user = db.getUserGivenId((int)lv_j_search.getAdapter().getItem(position));
+        db.close();
+        SessionData.setLoggedInUser(user);
+        startActivity(new Intent(FindID.this,WelcomePage.class));
+    }
+
+
+
 
 }

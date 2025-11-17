@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
@@ -24,7 +25,9 @@ import java.util.ArrayList;
 
 public class WelcomePage extends AppCompatActivity {
 
+    PostsAdapter pAdapter;
     Button btn_j_back;
+    Button btn_j_update;
     Button btn_j_makePosts;
     ListView lv_j_posts;
     TextView tv_j_welcome;
@@ -44,6 +47,7 @@ public class WelcomePage extends AppCompatActivity {
         });
 
         btn_j_back = findViewById(R.id.btn_v_welcome_back);
+        btn_j_update = findViewById(R.id.btn_v_updateUserData);
         btn_j_makePosts = findViewById(R.id.btn_v_makePost);
         lv_j_posts = findViewById(R.id.lv_v_posts);
         tv_j_welcome = findViewById(R.id.tv_v_welcome_wMessage);
@@ -57,6 +61,8 @@ public class WelcomePage extends AppCompatActivity {
 
         setClickListeners();
 
+        fillPosts();
+
         //db.GetAllPostsGivenCriteria("","","");
     }
 
@@ -68,12 +74,36 @@ public class WelcomePage extends AppCompatActivity {
                 startActivity(new Intent(WelcomePage.this,MainActivity.class));
             }
         });
+        btn_j_update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(WelcomePage.this,UpdateUser.class));
+            }
+        });
         btn_j_makePosts.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                startActivity(new Intent(WelcomePage.this,MakePost.class));
             }
         });
+        lv_j_posts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Post post = (Post)lv_j_posts.getAdapter().getItem(position);
+                SessionData.setCurrentlyViewedPost(post);
+                startActivity(new Intent(WelcomePage.this,ViewPost.class));
+            }
+        });
+    }
+
+
+    private void fillPosts() {
+
+        ArrayList<Post> posts = db.getAllBuiltPosts();
+        // = db.GetAllPostsGivenCriteria("","","");
+
+        pAdapter = new PostsAdapter(this,posts);
+        lv_j_posts.setAdapter(pAdapter);
     }
 
     private void setWelcomeMessage() {

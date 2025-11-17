@@ -52,10 +52,10 @@ public class SearchBoxAdapter extends BaseAdapter {
         int userId = userIds.get(position);
 
         //db.GetAllPostsGivenCriteria("","","");
-        User cur_user = db.getUserGivenId(position);
+        User cur_user = db.getUserGivenId(userId);
 
-        FirstName.setText("ID: "+cur_user.getFname());
-        LastName.setText("ID: "+cur_user.getLname());
+        FirstName.setText("Firstname: "+cur_user.getFname());
+        LastName.setText("Lastname: "+cur_user.getLname());
 
         return view;
     }

@@ -212,10 +212,43 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
     }
 
+    public ArrayList<Post> getAllBuiltPosts() {
+        String selectStatement = "SELECT * FROM " +posts_table_name + " WHERE userId = '" + SessionData.getLoggedInUser().getId() + "';";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectStatement,null);
+
+        ArrayList<Post> posts = new ArrayList<>();
+
+        if (cursor.moveToFirst()) {
+            do {
+                Post post = new Post();
+                post.SetUserID(cursor.getInt(1));
+                post.SetCategory(cursor.getString(2));
+                post.SetPostData(cursor.getString(3));
+
+                posts.add(post);
+            }
+            while(cursor.moveToNext());
+        }
+
+
+        db.close();
+        return posts;
+
+    }
+
     public void addUserToDB(User u) {
         SQLiteDatabase db = this.getWritableDatabase();
         String insertUser = "INSERT INTO " + users_table_name + " (fname, lname, email) VALUES ('" + u.getFname() + "', '" + u.getLname() + "', '" + u.getEmail() + "');";
         db.execSQL(insertUser);
+        db.close();
+    }
+
+
+    public void addPostToDB(Post p) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String insertPost = "INSERT INTO " + posts_table_name + " (userid, category, postData) VALUES ('" + p.GetUserID() + "', '" + p.GetCategory() + "', '" + p.GetPostData() + "');'" ;
+        db.execSQL(insertPost);
         db.close();
     }
 
@@ -339,6 +372,20 @@ public class DatabaseHelper extends SQLiteOpenHelper
             return loggedInUser;
         }
         return null;
+    }
+
+
+    public void updateUser(User u) {
+        int id = u.getId();
+        String f = u.getFname();
+        String l = u.getLname();
+        String e = u.getEmail();
+
+        String updateCommand = "UPDATE " + users_table_name + " SET fname = '" + f + "', lname = '" + l + "', email = '" + e + "' WHERE userId = '" + id + "';";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL(updateCommand);
+        db.close();
     }
 
 }
